@@ -35,23 +35,19 @@ jobs:
       - name: Build Docker image
         run: docker build -t quiz-app:test .
 
-      # -------------------------
-      # TRIVY FILESYSTEM SCAN
-      # -------------------------
-
       - name: Run Trivy filesystem scan (generate SARIF)
         uses: aquasecurity/trivy-action@0.20.0
         with:
           scan-type: fs
           format: sarif
-          output: trivy-results.sarif
+          output: trivy-fs.sarif
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-      - name: Upload filesystem SARIF to GitHub Security
+      - name: Upload filesystem SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: trivy-results.sarif
+          sarif_file: trivy-fs.sarif
           category: trivy-fs
 
       - name: Enforce filesystem security gate
@@ -62,10 +58,6 @@ jobs:
           ignore-unfixed: true
           exit-code: 1
 
-      # -------------------------
-      # TRIVY IMAGE SCAN
-      # -------------------------
-
       - name: Run Trivy image scan (generate SARIF)
         uses: aquasecurity/trivy-action@0.20.0
         with:
@@ -75,11 +67,11 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
 
-      - name: Upload image SARIF to GitHub Security
+      - name: Upload image SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: trivy-image.sarif
-          category: trivy-image
+          category: trivy-image-pr
 
       - name: Enforce image security gate
         uses: aquasecurity/trivy-action@0.20.0
@@ -113,6 +105,21 @@ jobs:
       - name: Build Docker image with SHA tag
         run: |
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/quiz-app:${{ github.sha }} .
+
+      - name: Run Trivy image scan (generate SARIF - main)
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/quiz-app:${{ github.sha }}
+          format: sarif
+          output: trivy-main.sarif
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+
+      - name: Upload image SARIF (main)
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-main.sarif
+          category: trivy-main
 
       - name: Log in to Docker Hub
         run: |
