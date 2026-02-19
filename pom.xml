@@ -23,11 +23,19 @@
         <java.version>21</java.version>
     </properties>
 
-    <!-- Centralized dependency management -->
     <dependencyManagement>
         <dependencies>
 
-            <!-- Netty BOM (fix CVEs) -->
+            <!-- Override Spring Framework to fix CVE-2025-41249 -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-framework-bom</artifactId>
+                <version>6.2.11</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Netty BOM (fix HTTP/2 CVEs) -->
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-bom</artifactId>
@@ -57,7 +65,7 @@
 
     <dependencies>
 
-        <!-- Web -->
+        <!-- Spring Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -69,7 +77,7 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <!-- AWS Bedrock -->
+        <!-- AWS Bedrock Runtime -->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>bedrockruntime</artifactId>
