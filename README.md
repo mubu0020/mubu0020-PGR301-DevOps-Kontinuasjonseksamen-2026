@@ -1,13 +1,13 @@
-# 🚀 PGR301 DevOps – Continuation Exam 2026
+# 🚀 DevOps in the Cloud – Continuation Exam 2026
 
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-blue)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 ![Security](https://img.shields.io/badge/security-scanned-success)
 ![Docker](https://img.shields.io/badge/container-Docker-blue)
 
-This repository contains my submission for the continuation exam in **PGR301 DevOps**.
+This repository contains my submission for the continuation exam in **DevOps in the Cloud**, where the project was awarded the grade **A**.
 
-The solution demonstrates a modern DevOps pipeline with a focus on:
+The solution demonstrates a modern DevOps pipeline with a strong focus on:
 
 * Automation
 * Security (multi-layer scanning)
@@ -46,112 +46,65 @@ The pipeline is implemented using **GitHub Actions** and is triggered on:
 ### 🔁 Pipeline Steps
 
 1. **Build**
-
-   * Maven build of the application
-
-2. **Test**
-
-   * Runs unit tests
-   * Stops pipeline on failure (fail fast)
-
-3. **File-level security scanning**
-
-   * Scans source code and dependencies
-   * Detects known vulnerabilities early
-
+2. **Test (fail fast)**
+3. **Filesystem security scan (Trivy)**
 4. **Docker build**
+5. **Container image scan (Trivy)**
+6. **SARIF upload to GitHub Security**
 
-   * Builds container image
+---
 
-5. **Image scanning (OSC)**
+## 🔐 Security Tooling
 
-   * Scans container image for vulnerabilities
-   * Covers OS packages and layers
+This project uses multiple layers of security scanning:
 
-6. **SARIF reporting**
+### 🔍 Trivy (Aqua Security)
 
-   * Results are uploaded to GitHub Security tab
+* Filesystem scanning (dependencies + code)
+* Container image scanning
+* Detects known CVEs
+* Integrated into CI/CD pipeline
+* Results uploaded via SARIF
+
+### 🛡️ GitHub CodeQL
+
+* Static code analysis
+* Detects security vulnerabilities in source code
+* Native GitHub integration
+* Runs on every push and pull request
 
 ---
 
 ## ⚡ Workflow Optimization
 
-The pipeline has been actively improved for performance and quality:
-
-* **Fail fast** → stops early on errors
-* **Reduced redundancy** → no unnecessary steps
-* **Clear separation of concerns**
-* **Efficient job ordering**
-* **Improved readability and maintainability**
-
-This results in:
-
-* Faster feedback
-* Lower resource usage
-* Easier debugging
-
----
-
-## 🔐 Security (Core Focus)
-
-Security is implemented across multiple layers:
-
-### 📄 File-level scanning
-
-* Scans code and dependencies
-* Detects vulnerabilities before build completion
-* Implements *shift-left security*
-
-### 📦 Dependency scanning
-
-* Identifies known CVEs
-* Promotes safer dependency management
-
-### 🐳 Image scanning (OSC)
-
-* Scans Docker image after build
-* Detects vulnerabilities in OS and libraries
-* Critical for production environments
-
-### 📊 SARIF (GitHub Security)
-
-* Results are displayed directly in GitHub
-* Provides:
-
-  * Visibility
-  * Traceability
-  * Easy follow-up
+* Fail fast strategy
+* Reduced redundancy
+* Clear separation of responsibilities
+* Optimized job ordering
+* Improved readability
 
 ---
 
 ## 🐳 Docker
-
-The application is containerized for consistent execution.
-
-### Build and run
 
 ```bash
 docker build -t quiz-app .
 docker run -p 8080:8080 quiz-app
 ```
 
-### Why Docker?
+Why Docker:
 
-* Same environment everywhere
+* Consistent environments
 * Easier deployment
-* Fewer "it works on my machine" issues
+* Eliminates environment drift
 
 ---
 
 ## 🔌 API
 
-### Endpoint
+**POST /quiz**
 
-```
-POST /quiz
-```
-
-### Request
+Request:
 
 ```json
 {
@@ -159,7 +112,7 @@ POST /quiz
 }
 ```
 
-### Response
+Response:
 
 ```json
 {
@@ -172,8 +125,7 @@ POST /quiz
 ## 🧪 Testing
 
 * Unit tests run automatically in CI
-* Pipeline fails if tests fail
-* Provides fast feedback and higher quality
+* Pipeline fails on test errors
 
 Run locally:
 
@@ -185,17 +137,15 @@ mvn test
 
 ## 🔒 GitHub Governance
 
-The repository follows modern GitHub practices:
-
 * Branch protection
 * Required status checks
-* Pull request-based development
+* Pull request workflow
 
-This ensures:
+Ensures:
 
-* A stable main branch
+* Stable main branch
 * Quality control
-* Traceable history
+* Traceability
 
 ---
 
@@ -207,7 +157,6 @@ This ensures:
 ├── .github/workflows/
 ├── Dockerfile
 ├── pom.xml
-└── docs/
 ```
 
 ---
@@ -220,76 +169,45 @@ mvn spring-boot:run
 ```
 
 Application runs on:
-
-```
 http://localhost:8080
-```
 
 ---
 
-## 🧠 DevOps Reflection
+## 🕒 Security Evolution Note
 
-This project focuses on how software is delivered, not just what it does.
+This project was originally submitted on **February 20, 2026**, where the entire CI/CD pipeline passed successfully with a fully green build.
 
-Key principles demonstrated:
+After submission, new vulnerabilities (CVEs) were discovered in dependencies, causing the pipeline to fail during filesystem scanning.
 
-* 🔁 Continuous Integration
-* ⚡ Full pipeline automation
-* 🔐 Shift-left security
-* 📦 Reproducibility with Docker
-* 👀 Visibility through GitHub Security
+This occurred because:
 
-The pipeline acts as a quality gate that automatically verifies:
-
-* Functionality
-* Security
-* Build integrity
-
----
-
-## 🕒 Important Note on Security and Time
-
-This project was originally submitted on **February 20, 2026**, where the entire pipeline passed successfully with a fully green build.
-
-After submission, the pipeline began failing due to newly discovered vulnerabilities in dependencies during file-level scanning.
-
-This happened because:
-
-* New CVEs were published after the exam submission
-* Security databases (used by tools like Trivy) are continuously updated
-* The same codebase can become “insecure” over time without any code changes
-
-This reflects an important reality in modern DevOps and software engineering:
-
-> Security is not static — it is continuously evolving.
-
-Even stable and previously approved systems can become vulnerable as new threats are discovered.
+* Security databases are continuously updated
+* New vulnerabilities are discovered over time
+* The same codebase can become insecure without any code changes
 
 ---
 
 ## 🧠 Industry Perspective
 
-This situation highlights a key industry principle:
+This highlights a key principle in modern DevOps:
 
-* Dependencies must be continuously monitored and updated
-* Security scanning tools evolve and improve over time
-* CI/CD pipelines are not just build tools, but ongoing security controls
+> Security is not static — it is continuous.
 
 In real-world environments, this leads to:
 
-* Continuous patching and upgrades
-* Dependency management strategies
-* Automated security gates in pipelines
+* Continuous dependency monitoring and updates
+* Automated security scanning in CI/CD pipelines
+* Ongoing maintenance even after deployment
 
 ---
 
 ## 🏁 Summary
 
-This project demonstrates a complete DevOps approach with:
+This project demonstrates:
 
-* An efficient CI/CD pipeline
-* Multi-layered security scanning
-* Optimized workflows
+* A complete CI/CD pipeline
+* Multi-layered security scanning (Trivy + CodeQL)
 * Container-based deployment
+* Real-world DevOps practices aligned with industry standards
 
-The main focus has been building a robust, modern, and secure delivery process — while also illustrating how software security must be continuously maintained over time.
+It also illustrates an important lesson: even stable and approved systems must be continuously maintained to remain secure over time.
