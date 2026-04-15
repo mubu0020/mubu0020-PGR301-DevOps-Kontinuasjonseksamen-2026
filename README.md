@@ -1,199 +1,295 @@
-# 🚀 PGR301 DevOps – Kontinuasjonseksamen 2026
+# 🚀 PGR301 DevOps – Continuation Exam 2026
 
 ![CI](https://img.shields.io/badge/CI-GitHub_Actions-blue)
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 ![Security](https://img.shields.io/badge/security-scanned-success)
 ![Docker](https://img.shields.io/badge/container-Docker-blue)
 
-Dette repositoryet inneholder min besvarelse til kontinuasjonseksamen i **PGR301 DevOps**.
+This repository contains my submission for the continuation exam in **PGR301 DevOps**.
 
-Løsningen demonstrerer en moderne DevOps-pipeline med fokus på:
-- Automatisering
-- Sikkerhet (multi-layer scanning)
-- Effektive workflows
-- Reproduserbar deploy
+The solution demonstrates a modern DevOps pipeline with a focus on:
 
----
-
-## 🧭 Om prosjektet
-
-Applikasjonen er en enkel **Quiz API** utviklet med Spring Boot.
-
-Den er bevisst holdt enkel for å flytte fokus til:
-- CI/CD
-- Sikkerhet
-- Infrastruktur og leveranseprosess
+* Automation
+* Security (multi-layer scanning)
+* Efficient workflows
+* Reproducible deployment
 
 ---
 
-## 🏗️ Overordnet arkitektur
+## 🧭 About the Project
 
+The application is a simple **Quiz API** built with Spring Boot.
 
-Developer → GitHub → GitHub Actions → Build/Test → Security Scan → Docker Build → Image Scan → Resultater i GitHub Security
+It is intentionally kept simple to shift focus toward:
 
+* CI/CD
+* Security
+* Infrastructure and delivery processes
 
-Pipeline fungerer som en komplett kvalitetssikring før kode kan merges eller deployes.
+---
+
+## 🏗️ High-Level Architecture
+
+Developer → GitHub → GitHub Actions → Build/Test → Security Scan → Docker Build → Image Scan → Results in GitHub Security
+
+The pipeline acts as a complete quality gate before code can be merged or deployed.
 
 ---
 
 ## ⚙️ CI/CD Pipeline
 
-Pipeline er implementert med **GitHub Actions** og trigges ved:
-- Push
-- Pull Request
+The pipeline is implemented using **GitHub Actions** and is triggered on:
 
-### 🔁 Pipeline steg
+* Push
+* Pull Request
+
+### 🔁 Pipeline Steps
 
 1. **Build**
-   - Maven build av applikasjonen
+
+   * Maven build of the application
 
 2. **Test**
-   - Kjører enhetstester
-   - Stopper pipeline ved feil (fail fast)
+
+   * Runs unit tests
+   * Stops pipeline on failure (fail fast)
 
 3. **File-level security scanning**
-   - Scanner kildekode og dependencies
-   - Oppdager kjente sårbarheter tidlig
+
+   * Scans source code and dependencies
+   * Detects known vulnerabilities early
 
 4. **Docker build**
-   - Bygger container image
+
+   * Builds container image
 
 5. **Image scanning (OSC)**
-   - Scanner container image for sårbarheter
-   - Dekker OS packages og layers
+
+   * Scans container image for vulnerabilities
+   * Covers OS packages and layers
 
 6. **SARIF reporting**
-   - Resultater sendes til GitHub Security-tab
+
+   * Results are uploaded to GitHub Security tab
 
 ---
 
-## ⚡ Workflow-optimalisering
+## ⚡ Workflow Optimization
 
-Pipeline er aktivt forbedret for ytelse og kvalitet:
+The pipeline has been actively improved for performance and quality:
 
-- **Fail fast** → stopper tidlig ved feil
-- **Redusert redundans** → ingen unødvendige steg
-- **Tydelig separasjon av ansvar**
-- **Effektiv rekkefølge på jobs**
-- **Bedre lesbarhet og vedlikeholdbarhet**
+* **Fail fast** → stops early on errors
+* **Reduced redundancy** → no unnecessary steps
+* **Clear separation of concerns**
+* **Efficient job ordering**
+* **Improved readability and maintainability**
 
-Dette gir:
-- Raskere feedback
-- Mindre ressursbruk
-- Enklere debugging
+This results in:
+
+* Faster feedback
+* Lower resource usage
+* Easier debugging
 
 ---
 
-## 🔐 Sikkerhet (kjerne i løsningen)
+## 🔐 Security (Core Focus)
 
-Sikkerhet er implementert i flere lag:
+Security is implemented across multiple layers:
 
 ### 📄 File-level scanning
-- Scanner kode og dependencies
-- Oppdager sårbarheter før build fullføres
-- Implementerer *shift-left security*
+
+* Scans code and dependencies
+* Detects vulnerabilities before build completion
+* Implements *shift-left security*
 
 ### 📦 Dependency scanning
-- Identifiserer kjente CVE-er
-- Bidrar til tryggere dependency-håndtering
+
+* Identifies known CVEs
+* Promotes safer dependency management
 
 ### 🐳 Image scanning (OSC)
-- Scanner Docker image etter build
-- Avdekker sårbarheter i OS og libraries
-- Viktig for produksjonsmiljø
+
+* Scans Docker image after build
+* Detects vulnerabilities in OS and libraries
+* Critical for production environments
 
 ### 📊 SARIF (GitHub Security)
-- Resultater vises direkte i GitHub
-- Gir:
-  - Oversikt
-  - Sporbarhet
-  - Enkel oppfølging
+
+* Results are displayed directly in GitHub
+* Provides:
+
+  * Visibility
+  * Traceability
+  * Easy follow-up
 
 ---
 
 ## 🐳 Docker
 
-Applikasjonen er containerisert for konsistent kjøring.
+The application is containerized for consistent execution.
 
-### Bygg og kjør
+### Build and run
 
 ```bash
 docker build -t quiz-app .
 docker run -p 8080:8080 quiz-app
-Hvorfor Docker?
-Samme miljø overalt
-Enklere deploy
-Mindre "it works on my machine"-problemer
-🔌 API
-Endpoint
+```
+
+### Why Docker?
+
+* Same environment everywhere
+* Easier deployment
+* Fewer "it works on my machine" issues
+
+---
+
+## 🔌 API
+
+### Endpoint
+
+```
 POST /quiz
-Request
+```
+
+### Request
+
+```json
 {
   "answers": ["A", "B", "C"]
 }
-Response
+```
+
+### Response
+
+```json
 {
   "score": 2
 }
-🧪 Testing
-Enhetstester kjøres automatisk i CI
-Pipeline feiler hvis tester feiler
-Gir rask feedback og høyere kvalitet
+```
 
-Kjør lokalt:
+---
 
+## 🧪 Testing
+
+* Unit tests run automatically in CI
+* Pipeline fails if tests fail
+* Provides fast feedback and higher quality
+
+Run locally:
+
+```bash
 mvn test
-🔒 GitHub governance
+```
 
-Repoet bruker moderne GitHub-praksis:
+---
 
-Branch protection
-Required status checks
-Pull request-basert utvikling
+## 🔒 GitHub Governance
 
-Dette sikrer:
+The repository follows modern GitHub practices:
 
-Stabil main branch
-Kvalitetskontroll
-Sporbar historikk
-📁 Struktur
+* Branch protection
+* Required status checks
+* Pull request-based development
+
+This ensures:
+
+* A stable main branch
+* Quality control
+* Traceable history
+
+---
+
+## 📁 Structure
+
+```
 .
 ├── src/
 ├── .github/workflows/
 ├── Dockerfile
 ├── pom.xml
 └── docs/
-🛠️ Kjør lokalt
+```
+
+---
+
+## 🛠️ Run Locally
+
+```bash
 mvn clean install
 mvn spring-boot:run
+```
 
-Applikasjonen kjører på:
+Application runs on:
 
+```
 http://localhost:8080
-🧠 DevOps-refleksjon
+```
 
-Denne løsningen fokuserer på hvordan software leveres, ikke bare hva den gjør.
+---
 
-Viktige prinsipper demonstrert:
+## 🧠 DevOps Reflection
 
-🔁 Kontinuerlig integrasjon
-⚡ Automatisering av hele pipeline
-🔐 Shift-left security
-📦 Reproduserbarhet med Docker
-👀 Synlighet gjennom GitHub Security
+This project focuses on how software is delivered, not just what it does.
 
-Pipeline fungerer som en kvalitetssikring som automatisk verifiserer:
+Key principles demonstrated:
 
-Funksjonalitet
-Sikkerhet
-Byggbarhet
-🏁 Oppsummering
+* 🔁 Continuous Integration
+* ⚡ Full pipeline automation
+* 🔐 Shift-left security
+* 📦 Reproducibility with Docker
+* 👀 Visibility through GitHub Security
 
-Prosjektet demonstrerer en komplett DevOps-tilnærming med:
+The pipeline acts as a quality gate that automatically verifies:
 
-Effektiv CI/CD pipeline
-Sikkerhet på flere nivåer
-Optimalisert workflow
-Container-basert deploy
+* Functionality
+* Security
+* Build integrity
 
-Fokuset har vært på å bygge en robust og moderne leveranseprosess.
+---
+
+## 🕒 Important Note on Security and Time
+
+This project was originally submitted on **February 20, 2026**, where the entire pipeline passed successfully with a fully green build.
+
+After submission, the pipeline began failing due to newly discovered vulnerabilities in dependencies during file-level scanning.
+
+This happened because:
+
+* New CVEs were published after the exam submission
+* Security databases (used by tools like Trivy) are continuously updated
+* The same codebase can become “insecure” over time without any code changes
+
+This reflects an important reality in modern DevOps and software engineering:
+
+> Security is not static — it is continuously evolving.
+
+Even stable and previously approved systems can become vulnerable as new threats are discovered.
+
+---
+
+## 🧠 Industry Perspective
+
+This situation highlights a key industry principle:
+
+* Dependencies must be continuously monitored and updated
+* Security scanning tools evolve and improve over time
+* CI/CD pipelines are not just build tools, but ongoing security controls
+
+In real-world environments, this leads to:
+
+* Continuous patching and upgrades
+* Dependency management strategies
+* Automated security gates in pipelines
+
+---
+
+## 🏁 Summary
+
+This project demonstrates a complete DevOps approach with:
+
+* An efficient CI/CD pipeline
+* Multi-layered security scanning
+* Optimized workflows
+* Container-based deployment
+
+The main focus has been building a robust, modern, and secure delivery process — while also illustrating how software security must be continuously maintained over time.
