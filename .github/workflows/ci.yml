@@ -25,6 +25,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: maven
 
       - name: Run unit tests
         run: mvn test
@@ -35,10 +36,11 @@ jobs:
       - name: Build Docker image
         run: docker build -t quiz-app:test .
 
+      # -------- TRIVY FILESYSTEM SCAN --------
       - name: Run Trivy filesystem scan (generate SARIF)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
-          scan-type: fs
+          scan-type: filesystem
           format: sarif
           output: trivy-fs.sarif
           severity: HIGH,CRITICAL
@@ -51,15 +53,16 @@ jobs:
           category: trivy-fs
 
       - name: Enforce filesystem security gate
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
-          scan-type: fs
+          scan-type: filesystem
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: 1
 
+      # -------- TRIVY IMAGE SCAN --------
       - name: Run Trivy image scan (generate SARIF)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
           image-ref: quiz-app:test
           format: sarif
@@ -74,7 +77,7 @@ jobs:
           category: trivy-image-pr
 
       - name: Enforce image security gate
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
           image-ref: quiz-app:test
           severity: HIGH,CRITICAL
@@ -95,6 +98,7 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+          cache: maven
 
       - name: Run unit tests
         run: mvn test
@@ -107,7 +111,7 @@ jobs:
           docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/quiz-app:${{ github.sha }} .
 
       - name: Run Trivy image scan (generate SARIF - main)
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.24.0
         with:
           image-ref: ${{ secrets.DOCKER_HUB_USERNAME }}/quiz-app:${{ github.sha }}
           format: sarif
